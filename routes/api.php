@@ -13,24 +13,37 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
-});
+// Route::middleware('auth:api')->get('/user', function (Request $request) {
+//     return $request->user();
+// });
 
-Route::apiResource('/class', 'Api\ClassController');
-Route::apiResource('/subject', 'Api\SubjectController');
-Route::apiResource('/student', 'Api\StudentController');
+// Route::apiResource('/class', 'Api\ClassController');
+// Route::apiResource('/subject', 'Api\SubjectController');
+// Route::resource('/student', 'Api\StudentController')->middleware('auth');working
+// Route::resource('/student', 'Api\StudentController')->middleware('auth:api');
+
+Route::post('login', 'AuthController@login');
+Route::post('register', 'AuthController@register');
 
 Route::group([
 
-    'prefix' => 'auth'
+    'prefix' => 'v1',
+    'middleware' => 'auth:api'
 
 ], function () {
-
-    Route::post('login', 'AuthController@login');
     Route::post('logout', 'AuthController@logout');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
     Route::post('payload', 'AuthController@payload');
-    Route::post('register', 'AuthController@register');
+    Route::resource('/student', 'Api\StudentController');
+    Route::resource('/subject', 'Api\SubjectController');
 });
+
+// Route::resource('/student', 'Api\StudentController');
+
+// Route::group([
+//     'middleware' => 'jwt.auth'
+// ], function () {
+//     // Route::resource('/student', 'Api\StudentController');
+//     Route::post('/student', 'Api\StudentController@show{id}');
+// });
